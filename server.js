@@ -3,6 +3,11 @@ const dotenv = require('dotenv');
 const config = require('./utils/config');
 const mongoose = require('mongoose');
 
+process.on('uncaughtException',  err => {
+    console.log('UNCAUGHT EXCEPTION!!! Shutting the server down');
+    console.log(err.name, err.message);
+    process.exit(1);
+})
 dotenv.config();
 const PORT = config.PORT || 3000;
 mongoose.connect(config.MONGO_URL, {
@@ -12,11 +17,18 @@ mongoose.connect(config.MONGO_URL, {
     useFindAndModify : false
 }).then(() => {
     console.log('connected to database');
-}).catch(() => {
-    console.log(`couldn't connect to database`);
-    process.exit(1);
+}).catch((err) => {
+    console.log(err);
 })
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`App Running on Port - ${PORT}`);
+})
+
+process.on('unhandledRejection', err => {
+    console.log('Unhandled Rejection!! Shutting Down the server....');
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
 })

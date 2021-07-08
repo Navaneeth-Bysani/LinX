@@ -1,6 +1,8 @@
 const Link = require('./../models/linkModel');
+const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
-exports.createLink  = async (req,res,next) => {
+exports.createLink = catchAsync(async (req,res,next) => {
     const link = {
         url : req.body.url,
         title : req.body.title
@@ -12,66 +14,57 @@ exports.createLink  = async (req,res,next) => {
         newLink,
         status : "success"
     })
-    return next();
-}
+})
 
-exports.deleteLink = async (req,res,next) => {
+exports.deleteLink = catchAsync(async (req,res,next) => {
     const linkId = req.params.id;
     const deletedLink = await Link.findByIdAndDelete(linkId);
     if(deletedLink == null) {
-        res.status(204).json({
-            status : "failed",
-            message : "specified linkID doesn't exist"
-        })
-        return next();
+        return next(new AppError(`can't find link with that id`, 404));
     }
     
     res.status(202).json({
         status : "success",
         message : `Link ${linkId} deleted successfully`
     })
+})
 
-    return next();
-}
-
-exports.linkClicked = async(req,res,next) => {
+exports.linkClicked = catchAsync(async(req,res,next) => {
     const linkId = req.params.id;
     const updatedLink = await Link.findByIdAndUpdate(linkId, {$inc : {visits : 1}});
     if(updatedLink == null) {
-        res.status(404).json({
-            message : "The specified id doesn't exist"
-        })
-        return next();
+        return next(new AppError(`can't find link with that id`, 404));
     }
     res.status(200).json({
         status : "success"
     })
-    return next();
-}
+})
 
-exports.updateLink = async(req,res,next) => {
+exports.updateLink = catchAsync(async(req,res,next) => {
     const linkId = req.params.id;
     const LinkBody = {
         url : req.body.url,
         title : req.body.title
     }
 
-    const updatedLink = await Link.findByIdAndUpdate(linkId, LinkBody);
+    const updatedLink = await Link.findByIdAndUpdate(linkId, LinkBody, {new : true});
+    if(updatedLink == null) {
+        return next(new AppError(`can't find link with that id`, 404));
+    }
     res.status(200).json({
         status : "success",
         updatedLink
     })
-    return next();
-}
+})
 
-exports.getLink = async(req,res,next) => {
+exports.getLink = catchAsync(async(req,res,next) => {
     const linkId = req.params.id;
     const link = await Link.findById(linkId);
-    
+    if(link == null) {
+        return next(new AppError(`can't find link with that id`, 404));
+    }
     res.status(200).json({
         status : "success",
         link
     })
-
-    return next();
-}
+})
