@@ -43,27 +43,61 @@ exports.signUp = catchAsync(async(req, res, next) => {
 
     
     const newUser = await User.create(user);
-    // const signUpCode = newUser.createSignUpCode();
-    // await newUser.save();
-    // const message = `Here is your confirmation code: please enter the code in the email confirm window : ${signUpCode}`;
-    // try {
-    //     await sendEmail({
-    //         email : newUser.email,
-    //         subject : 'Email verification code',
-    //         text : message
-    //     });
+    const signUpCode = newUser.createSignUpCode();
+    await newUser.save({validateBeforeSave : false});
+    const message = `Here is your confirmation code: please enter the code in the email confirm window : ${signUpCode}`;
+    try {
+        await sendEmail({
+            email : newUser.email,
+            subject : 'Email verification code',
+            text : message
+        });
     
-    //     res.status(200).json({
-    //         status : 'success',
-    //         message : 'code is sent to your email'
-    //     })
-    // } catch (err) {
-    //     user.emailVerificationCode = undefined;
-    //     await user.save({validateBeforeSave : false});
-    //     console.log(err);
-    //     return next(new AppError('Please try again', 500));
-    // }
-    createSendToken(newUser, 201, res);
+        res.status(200).json({
+            status : 'success',
+            message : 'code is sent to your email'
+        })
+    } catch (err) {
+        newUser.emailVerificationCode = undefined;
+        await newUser.save({validateBeforeSave : false});
+        console.log(err);
+        return next(new AppError('Please try again', 500));
+    }
+    // createSendToken(newUser, 201, res);
+})
+
+exports.resendCode = catchAsync(async (req,res,next) => {
+    const {email} = req.body;
+    
+    const user = await User.findOne({email : email});
+    if(!user) {
+        return next(new AppError('There is no user with that email id', 404));
+    }
+    
+    if(user.emailVerified) {
+        return next(new AppError('This email id is already verified'));
+    }
+
+    const signUpCode = user.createSignUpCode();
+    await user.save({validateBeforeSave : false});
+    const message = `Here is your confirmation code: please enter the code in the email confirm window : ${signUpCode}`;
+    try {
+        await sendEmail({
+            email : user.email,
+            subject : 'Email verification code',
+            text : message
+        });
+    
+        res.status(200).json({
+            status : 'success',
+            message : 'code is sent to your email'
+        })
+    } catch (err) {
+        user.emailVerificationCode = undefined;
+        await user.save({validateBeforeSave : false});
+        console.log(err);
+        return next(new AppError('Please try again', 500));
+    }
 })
 
 exports.confirmSignUp = catchAsync(async(req,res,next) => {
@@ -100,6 +134,12 @@ exports.login = catchAsync(async(req,res,next) => {
     if(!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
     }
+    if(!user.emailVerified) {
+        res.status(200).json({
+            status : "fail",
+            message : "please confirm your email Id"
+        })
+    }
     //if everything is fine, we are sending token back to the client
     createSendToken(user, 200, res);
 })
@@ -117,7 +157,7 @@ exports.protect = catchAsync(async(req,res,next) => {
 
     //verification of token
     const decoded = await promisify(jwt.verify)(token, JWT_SECRET);
-    console.log(decoded);
+    
     //check if user still exists
     const freshUser = await User.findById(decoded.id);
     if(!freshUser) {
