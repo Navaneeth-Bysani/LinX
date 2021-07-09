@@ -47,17 +47,22 @@ const handleValidationErrorDB = error => {
     return (new AppError(message, 400));
 }
 
+const handleJWTError = error => ((new AppError('Invalid! Please re-login', 401)));
+const handleTokenExpiredError = error => (new AppError('Your session has expired! Please re-login', 401));
+
 module.exports = (err,req,res,next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || "error";
-
     if(NODE_ENV === "development") {
         sendErrorDev(err, res);
     } else {
         let error = { ...err };
+        
         if(err.name === 'CastError') error = handleCastErrorDB(error);
         if(err.code === 11000) error = handleDuplicateFieldsDB(err);
         if(err.name === "ValidationError") error = handleValidationErrorDB(err);
+        if(err.name === "JsonWebTokenError") error = handleJWTError(err);
+        if(err.name === "TokenExpiredError") error = handleTokenExpiredError(err);
 
         sendErrorProd(error, res);
     }
