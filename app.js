@@ -12,7 +12,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 
 const app = express();
-// app.use(helmet());
+app.use(helmet());
 
 
 const limiter = rateLimit({
@@ -22,17 +22,17 @@ const limiter = rateLimit({
 });
 
 //http parameter pollution
-// app.use(hpp());
+app.use(hpp());
 
 //rate limiter
-// app.use('/api', limiter);
+app.use('/api', limiter);
 app.use(express.json({limit : '10kb'}));
 
 //sanitise mongo db data
-// app.use(mongoSanitize());
+app.use(mongoSanitize());
 
 //preventing xss attacks
-// app.use(xss());
+app.use(xss());
 
 app.use("/api/v1/links", LinkRouter);
 app.use("/api/v1/users", UserRouter);
