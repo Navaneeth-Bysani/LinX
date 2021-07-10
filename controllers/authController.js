@@ -67,14 +67,13 @@ exports.signUp = catchAsync(async(req, res, next) => {
 
 exports.resendCode = catchAsync(async (req,res,next) => {
     const {email} = req.body;
-    
     const user = await User.findOne({email : email});
     if(!user) {
         return next(new AppError('There is no user with that email id', 404));
     }
     
     if(user.emailVerified) {
-        return next(new AppError('This email id is already verified'));
+        return next(new AppError('This email id is already verified', 400));
     }
 
     const signUpCode = user.createSignUpCode();

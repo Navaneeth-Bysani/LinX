@@ -8,7 +8,7 @@ const CodeConfirm = () => {
 
     const confirmCode = (event) => {
         event.preventDefault();
-        axios.post('localhost:3000/api/v1/users/confirmSignUp', {email, code : code.current.value}).then(res => {
+        axios.post('http://localhost:3000/api/v1/users/confirmSignUp', {email, code : code.current.value}).then(res => {
             console.log(res);
         }).catch((err) => {
             console.log(err);
@@ -16,8 +16,9 @@ const CodeConfirm = () => {
     }
 
     const resendClicked = (event) => {
+        console.log(email);
         event.preventDefault();
-        axios.post('localhost:3000/api/v1/users/resendCode', {email}).then(res => {
+        axios.post('http://localhost:3000/api/v1/users/resendCode', {email}).then(res => {
             console.log(res);
         }).catch(err => {
             console.log(err);
