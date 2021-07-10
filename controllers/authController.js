@@ -63,7 +63,6 @@ exports.signUp = catchAsync(async(req, res, next) => {
         console.log(err);
         return next(new AppError('Please try again', 500));
     }
-    // createSendToken(newUser, 201, res);
 })
 
 exports.resendCode = catchAsync(async (req,res,next) => {
@@ -137,7 +136,7 @@ exports.login = catchAsync(async(req,res,next) => {
     if(!user.emailVerified) {
         res.status(200).json({
             status : "fail",
-            message : "please confirm your email Id"
+            message : "please confirm your email"
         })
     }
     //if everything is fine, we are sending token back to the client

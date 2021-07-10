@@ -14,7 +14,9 @@ const AppError = require('./utils/appError');
 const app = express();
 app.use(helmet());
 
+const cors = require('cors');
 
+app.use(cors());
 const limiter = rateLimit({
     max : 100,
     windowMs : 60*60*1000,
