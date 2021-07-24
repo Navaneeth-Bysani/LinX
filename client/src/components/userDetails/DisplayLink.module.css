@@ -1,0 +1,28 @@
+.link:visited, .link:link {
+    display: inline-block;
+    width: 99%;
+    border-radius: 0.5rem;
+    margin : 3px 0px;
+    background-color: green;
+    color: black;
+    border: 2px solid green;
+    padding: 10px 0px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.link:hover, .link:active {
+    background-color: white;
+    color: black;
+}
+
+.container {
+    text-align: center;
+    margin: 3 0;
+}
+
+@media screen and (min-width : 480px){
+    .link {
+        width: 100%;
+    }
+}

@@ -1,4 +1,6 @@
-import {Form, Button, Row, Col} from 'react-bootstrap';
+import {Form, Button, Container, Row} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
+
 import {useEffect, useRef} from 'react';
 import axios from 'axios';
 const Login = () => {
@@ -10,8 +12,6 @@ const Login = () => {
         const submittedPassword = password.current.value.trim();
 
         if(submittedEmail === "" || submittedPassword === "") {
-            email.current.value = "";
-            password.current.value = "";
             alert("enter a valid password and email");
             return;
         }
@@ -31,6 +31,8 @@ const Login = () => {
         
     }
     return (
+        <Container fluid>
+        <Row style = {{justifyContent:"center"}}>
         <Form style = {{border : "2px solid black",borderRadius : "1rem", padding : "20px"}} onSubmit = {(event)=>loginSubmitted(event)}>
             <div style = {{textAlign : "center"}}>
                 <Form.Text as = "h4">
@@ -53,16 +55,18 @@ const Login = () => {
                 <Form.Control type="password" placeholder="Password" ref = {password} />
             </Form.Group>
             <Form.Group controlId="formBasicCheckbox">
-                <Form.Text>Don't have an account yet? <a href = "/signup">Signup</a>! </Form.Text>
+                <Form.Text>Don't have an account yet? <Link to = "/signup">Signup</Link>! </Form.Text>
             </Form.Group>
             
             <Button variant="primary" type="submit">
                 login
             </Button>
             <Form.Text>
-                <a href = "/forgotPassword">Forgot Password?</a>
+                <Link to = "/forgotPassword">Forgot Password?</Link>
             </Form.Text>
         </Form>
+        </Row>
+        </Container>
     )
 }
 

@@ -50,6 +50,14 @@ const userSchema = new mongoose.Schema({
     emailVerified : {
         type : Boolean,
         default : false
+    },
+    username : {
+        type : String,
+        required : [true, 'A user must have a user name'],
+        unique : true
+    },
+    bio : {
+        type : String
     }
 })
 
