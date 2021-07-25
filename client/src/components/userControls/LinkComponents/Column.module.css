@@ -1,0 +1,13 @@
+.Column {
+    margin : 10px auto;
+    background-color: white;
+    text-align: center;
+    width: 100%;
+    max-width: 35rem;
+    padding : 10px;
+    border-radius: 2px;
+}
+
+.editButton {
+    float: left;
+}

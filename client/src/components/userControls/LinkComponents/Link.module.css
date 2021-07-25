@@ -1,0 +1,9 @@
+.Outline {
+    width : 100%;
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+    margin: 5px 0px;
+    border-radius: 2px;
+    background-color: white;
+}

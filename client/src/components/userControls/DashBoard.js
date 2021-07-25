@@ -7,8 +7,10 @@ const Dashboard = () => {
     return (
         <div>
             <NavBar />
-            {window.location.hash.substr(1) === "user" ? <UserProfile/> : null}
-            <LinkControls/>
+            {/* {window.location.hash.substr(1) === "user" ? <UserProfile/> : null}
+            {window.location.hash.substr(1) === "links"  ? <LinkControls/> : null} */}
+            {(window.location.pathname.split('/')[2]) === "user" ? <UserProfile/> : null}
+            {(window.location.pathname.split('/')[2]) === "links"  ? <LinkControls/> : null}
         </div>
     )
 }
