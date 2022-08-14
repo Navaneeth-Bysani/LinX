@@ -8,9 +8,14 @@ process.on('uncaughtException',  err => {
     console.log(err.name, err.message);
     process.exit(1);
 })
+
 dotenv.config();
+
 const PORT = config.PORT || 3000;
-mongoose.connect(config.MONGO_URL, {
+
+const MONGODB_URI = config.MONGO_URL.replace('<password>', config.MONGO_PASSWORD);
+
+mongoose.connect(MONGODB_URI, {
     useNewUrlParser : true,
     useUnifiedTopology : true,
     useCreateIndex : true,

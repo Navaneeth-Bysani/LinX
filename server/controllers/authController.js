@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 const {promisify} = require('util');
 const crypto = require('crypto');
 
-const User = require('./../models/userModel');
-const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError.js');
-const sendEmail = require('./../utils/email.js');
+const User = require('../models/userModel');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError.js');
+const sendEmail = require('../utils/email.js.js');
 
-const {JWT_SECRET, JWT_EXPIRES_IN, JWT_COOKIE_EXPIRES_IN, NODE_ENV} = require('./../utils/config');
+const {JWT_SECRET, JWT_EXPIRES_IN, JWT_COOKIE_EXPIRES_IN, NODE_ENV} = require('../utils/config');
 
 const signToken = id => {
     return jwt.sign({id : id}, JWT_SECRET, {

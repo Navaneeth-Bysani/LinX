@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const linkController = require('./../controllers/linkController');
-const authController = require('./../controllers/authController');
+const linkController = require('../controllers/linkController');
+const authController = require('../controllers/authController');
 
 router.patch('/clicked/:id', linkController.linkClicked);
 
